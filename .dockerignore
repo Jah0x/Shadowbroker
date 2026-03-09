@@ -1,0 +1,8 @@
+.git/
+.git_backup/
+**/__pycache__/
+**/.pytest_cache/
+**/node_modules/
+**/.next/
+**/.env
+**/*.log

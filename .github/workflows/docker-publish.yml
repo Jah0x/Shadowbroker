@@ -46,6 +46,8 @@ jobs:
         uses: docker/build-push-action@v5.0.0
         with:
           context: ./frontend
+          build-args: |
+            NEXT_PUBLIC_API_URL=${{ vars.NEXT_PUBLIC_API_URL || 'https://api.info.securesoft.dev' }}
           push: ${{ github.event_name != 'pull_request' }}
           tags: ${{ steps.meta.outputs.tags }}
           labels: ${{ steps.meta.outputs.labels }}

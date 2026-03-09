@@ -1,42 +1,28 @@
-FROM node:20-alpine AS base
+FROM node:20 AS build
 
-FROM base AS deps
-RUN apk add --no-cache libc6-compat
 WORKDIR /app
+
 COPY package*.json ./
-RUN npm ci
+RUN npm install
 
-FROM base AS builder
-WORKDIR /app
-COPY --from=deps /app/node_modules ./node_modules
 COPY . .
-ENV NEXT_TELEMETRY_DISABLED 1
-# NEXT_PUBLIC_* vars must exist at build time for Next.js to inline them.
-# Default empty = auto-detect from browser hostname at runtime.
-ARG NEXT_PUBLIC_API_URL=""
+ARG NEXT_PUBLIC_API_URL=http://backend:8000
 ENV NEXT_PUBLIC_API_URL=$NEXT_PUBLIC_API_URL
 RUN npm run build
 
-FROM base AS runner
+FROM node:20-alpine AS runtime
+
 WORKDIR /app
-ENV NODE_ENV production
-ENV NEXT_TELEMETRY_DISABLED 1
 
-RUN addgroup --system --gid 1001 nodejs
-RUN adduser --system --uid 1001 nextjs
+ENV NODE_ENV=production
 
-COPY --from=builder /app/public ./public
+COPY package*.json ./
+RUN npm install --omit=dev
 
-RUN mkdir .next
-RUN chown nextjs:nodejs .next
-
-COPY --from=builder --chown=nextjs:nodejs /app/.next/standalone ./
-COPY --from=builder --chown=nextjs:nodejs /app/.next/static ./.next/static
-
-USER nextjs
+COPY --from=build /app/.next ./.next
+COPY --from=build /app/public ./public
+COPY --from=build /app/next.config.ts ./next.config.ts
 
 EXPOSE 3000
-ENV PORT 3000
-ENV HOSTNAME "0.0.0.0"
 
-CMD ["node", "server.js"]
+CMD ["npm", "start"]
