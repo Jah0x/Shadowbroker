@@ -13,6 +13,8 @@ services:
       LTA_ACCOUNT_KEY: ${LTA_ACCOUNT_KEY}
       OPENSKY_CLIENT_ID: ${OPENSKY_CLIENT_ID}
       OPENSKY_CLIENT_SECRET: ${OPENSKY_CLIENT_SECRET}
+    volumes:
+      - ./backend/data:/app/data
     restart: unless-stopped
 
   frontend:
@@ -25,7 +27,7 @@ services:
     ports:
       - "3000:3000"
     environment:
-      NEXT_PUBLIC_API_URL: http://backend:8000
+      NEXT_PUBLIC_API_URL: ${NEXT_PUBLIC_API_URL:-http://backend:8000}
     depends_on:
       - backend
     restart: unless-stopped
