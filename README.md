@@ -187,6 +187,18 @@ Open `http://localhost:3000` to view the dashboard.
 > This is a **build-time** variable (Next.js limitation) — it gets baked into
 > the frontend during `npm run build`. Changing it requires a rebuild.
 
+
+### 🏷️ Published Container Images
+
+This repository includes a GitHub Actions workflow at `.github/workflows/docker-publish.yml` that builds and publishes both frontend and backend images to GHCR (`ghcr.io`) on pushes to `main`, `work`, and version tags (`v*.*.*`).
+
+Published image names:
+
+- `ghcr.io/<owner>/<repo>-frontend`
+- `ghcr.io/<owner>/<repo>-backend`
+
+The workflow also emits commit SHA tags and a `latest` tag when building from the default branch.
+
 ---
 
 ### 📦 Quick Start (No Code Required)
