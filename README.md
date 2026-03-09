@@ -199,6 +199,24 @@ Published image names:
 
 The workflow also emits commit SHA tags and a `latest` tag when building from the default branch.
 
+### ☸️ Kubernetes Deploy (using published images)
+
+Ready-to-apply Kubernetes manifests are included in `k8s/shadowbroker.yaml`.
+
+```bash
+kubectl apply -f k8s/shadowbroker.yaml
+kubectl -n shadowbroker get pods,svc
+```
+
+Before applying, set your API keys in the `shadowbroker-secrets` section of the manifest.
+
+By default the manifest uses:
+
+- `ghcr.io/bigbodycobain/shadowbroker-frontend:latest`
+- `ghcr.io/bigbodycobain/shadowbroker-backend:latest`
+
+If your GHCR package is private, create a Docker registry pull secret and attach it to the Deployments (details in `k8s/README.md`).
+
 ---
 
 ### 📦 Quick Start (No Code Required)
